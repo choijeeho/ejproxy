@@ -1,0 +1,319 @@
+<ViewConfig>
+<beans>
+
+</beans>
+<views start="loginView">
+	<attribute name="pacakge" value="com.eastarjet.net.terminal.view.handler" />
+	<view id="loginView" >
+		<validator class="com.eastarjet.net.service.terminal.view.validator.MatchValidator" 
+			target="output" >
+			<attribute name="pattern" value="Logon:" />
+		</validator>
+
+		<handler class="com.eastarjet.crs.proxy.skyport.handler.StartEnterHandler"
+				  target="input" >
+			<validator class="com.eastarjet.net.service.terminal.view.validator.MatchValidator" 
+				target="output" >
+				<attribute name="pattern" value="Connected To SkyPort Service" />
+			</validator>
+		</handler>
+		
+		<handler class="com.eastarjet.crs.proxy.skyport.handler.LoginHandler"
+				  target="input" >
+			<validator class="com.eastarjet.net.service.terminal.view.validator.MatchValidator" 
+				target="output" >
+				<attribute name="pattern" value="Connected:" />
+			</validator>
+		</handler>
+
+		<handler class="com.eastarjet.crs.proxy.skyport.handler.LoginHandler"
+				  target="input" >
+			<validator class="com.eastarjet.net.service.terminal.view.validator.MatchValidator" 
+				target="output" >
+				<attribute name="pattern" value="Logon:" />
+			</validator>
+		</handler>
+		 
+		<handler class="com.eastarjet.crs.proxy.skyport.handler.LoginHandler"
+				  target="input" >
+			<validator class="com.eastarjet.net.service.terminal.view.validator.MatchValidator" 
+				target="output" >
+				<attribute name="pattern" value="Agent logon:" />
+			</validator>
+		</handler> 
+		
+		<handler   class="com.eastarjet.crs.proxy.skyport.handler.ViewEchoHandler" 
+			index="last" />
+		
+		<reference id="mainMenuView"   />
+		
+	</view>
+	<!--  Main View -->
+	<view id="mainMenuView"> 
+		<validator class="com.eastarjet.net.service.terminal.view.validator.MatchValidator" 
+			target="output" >
+			<attribute name="pattern" value="Menu                                 Main" />
+		</validator>
+		<handler  class="com.eastarjet.crs.proxy.skyport.handler.MainMenuHandler" target="output" >
+			<validator class="com.eastarjet.net.service.terminal.view.validator.MatchValidator" 
+				target="output" >
+				<attribute name="pattern" value="24. General Reference             " />
+			</validator>
+		</handler>
+
+		<handler  class="com.eastarjet.crs.proxy.skyport.handler.printing.PrintingPMListHandler">
+			<validator class="com.eastarjet.net.service.terminal.view.validator.PatternValidator" 
+				target="output" >
+				<!--  1b,5b,35,69,0d,0a,28,41,54,42 = "^[5i" 
+				<attribute name="pattern" value="$0x1b;$0x5b;$0x35;$0x69;$0x01;$0x1b;$0x5b;$0x3f;$0x33;$0x6c;%*$0x1b;$0x5b;$0x34;$0x69;" />-->
+				<attribute name="pattern" value="$0x1b;$0x5b;$0x35;$0x69;$0x01;$0x20;$0x20;$0x20;$0x20;$0x20;$0x20;$0x20;$0x20;$0x20;$0x20;" />
+			</validator>
+			<attribute name="domain" value="DEF" />
+			<!-- <attribute name="agent"  value="ejonepass"/>
+			<attribute name="password" value="godhsvotm12" />-->
+			<attribute name="agent"  value="kdmz7"/>
+			<attribute name="password" value="aktmxj99" />
+			<attribute name="soap.operationManager" 	value="http://internal-zeibep-lb-1526732820.ap-northeast-2.elb.amazonaws.com/OperationsManagerClient.asmx"/>
+			<attribute name="soap.sessionManager" 		value="http://internal-zeibep-lb-1526732820.ap-northeast-2.elb.amazonaws.com/SessionManagerClient.asmx"/>
+		 </handler>		
+
+		<handler  class="com.eastarjet.crs.proxy.skyport.handler.ViewEchoHandler" 
+		index="last" />
+		
+		<reference id="loginView" />
+		<reference id="flightInfoView" />
+		<reference id="generalRefView" />
+	</view>
+
+	<!-- FlightInfo View -->
+	<view id="flightInfoView"> 
+		<validator class="com.eastarjet.net.service.terminal.view.validator.MatchValidator" 
+			target="output" >
+			<attribute name="pattern" value="|   *Passenger Counts*    |" />
+		</validator>
+ 		<handler  class="com.eastarjet.crs.proxy.skyport.handler.ViewEchoHandler" 
+		index="last" />
+		
+		<reference id="checkinCommandView" />
+		<reference id="mainMenuView" />
+		<reference id="loginView" />
+	</view>
+
+	<view id="checkinCommandView">
+		<validator class="com.eastarjet.net.service.terminal.view.validator.PatternValidator" 
+				target="output" >
+				<!-- %d, %c, %d  -->
+				<attribute name="pattern" value="%2n:%2n %5c/%6c %4c/%4n:%*>" />
+		</validator>
+		
+		<handler  class="com.eastarjet.crs.proxy.skyport.handler.CheckinPromptHandler"  >
+			<validator class="com.eastarjet.net.service.terminal.view.validator.PatternValidator" 
+				target="output" >
+				<!-- %d, %c, %d  -->
+				<attribute name="pattern" value="%2n:%2n %5c/%6c %4c/%4n:%*>" />
+			</validator>
+			
+		</handler>
+		
+		<handler  class="com.eastarjet.crs.proxy.skyport.handler.printing.PrintingATBHandler"  >
+			<validator class="com.eastarjet.net.service.terminal.view.validator.PatternValidator" 
+				target="output" >
+				<!--  1b,5b,35,69,0d,0a,28,41,54,42 = "[5i\r\n(ATB" -->
+				<attribute name="pattern" value="$0x1b;$0x5b;$0x35;$0x69;$0x0d;$0x0a;$0x28;$0x41;$0x54;$0x42;%*$0x1b;$0x5b;$0x34;$0x69;" />
+			</validator>
+			 <attribute name="domain" value="DEF" />
+			<attribute name="agent"  value="ejonepass"/>
+			<attribute name="password" value="godhsvotm12" />
+			<attribute name="soap.operationManager" 	value="http://internal-zeibep-lb-1526732820.ap-northeast-2.elb.amazonaws.com/OperationsManagerClient.asmx"/>
+			<attribute name="soap.sessionManager" 		value="http://internal-zeibep-lb-1526732820.ap-northeast-2.elb.amazonaws.com/SessionManagerClient.asmx"/>
+		</handler>
+		
+		<handler  class="com.eastarjet.crs.proxy.skyport.handler.printing.PrintingBTPHandler"  >
+			<validator class="com.eastarjet.net.service.terminal.view.validator.PatternValidator" 
+				target="output" >
+				<attribute name="pattern" value="$0x1b;$0x5b;$0x35;$0x69;$0x28;$0x42;$0x54;$0x50;%*$0x1b;$0x5b;$0x34;$0x69;" />
+			</validator>
+		</handler>
+				
+		<handler  class="com.eastarjet.crs.proxy.skyport.handler.ViewEchoHandler" 
+		index="last" />
+		<reference id="mainMenuView" />
+		<reference id="loginView" />
+	</view>
+
+	<view id="checkinHelpView">
+		<handler  class="com.eastarjet.crs.proxy.skyport.handler.ViewEchoHandler" 
+		index="last" />
+		<reference id="checkinCommandView" />
+		<reference id="mainMenuView" />
+		<reference id="loginView" />
+	</view>
+		
+	<view id="paxListView" >
+
+		<handler  class="com.eastarjet.crs.proxy.skyport.handler.PagingHandler"  target="output" >
+			<validator class="com.eastarjet.net.service.terminal.view.validator.PatternValidator" 
+				target="output" >
+				<attribute name="pattern" value="Displayed:*>" />
+			</validator>
+		</handler>
+		<!-- for PrintingHandler 
+	final static byte [] header = {0x1b,0x5b,0x35,0x69 };
+	final static byte [] tail 	= {0x1b,0x5b,0x34,0x69 };
+	 -->
+		
+		<handler  class="com.eastarjet.crs.proxy.skyport.handler.printing.PrintingATBHandler"  >
+			<validator class="com.eastarjet.net.service.terminal.view.validator.PatternValidator" 
+				target="output" >
+				<!--  1b,5b,35,69,0d,0a,28,41,54,42 = "[5i\r\n(ATB" -->
+				<attribute name="pattern" value="$0x1b;$0x5b;$0x35;$0x69;$0x0d;$0x0a;$0x28;$0x41;$0x54;$0x42;%*$0x1b;$0x5b;$0x34;$0x69;" />
+			</validator>
+			<attribute name="domain" value="DEF" />
+			<attribute name="agent"  value="ejonepass"/>
+			<attribute name="password" value="godhsvotm12" />
+			<attribute name="soap.operationManager" 	value="http://internal-zeibep-lb-1526732820.ap-northeast-2.elb.amazonaws.com/OperationsManagerClient.asmx"/>
+			<attribute name="soap.sessionManager" 		value="http://internal-zeibep-lb-1526732820.ap-northeast-2.elb.amazonaws.com/SessionManagerClient.asmx"/>
+		</handler>
+		<handler  class="com.eastarjet.crs.proxy.skyport.handler.printing.PrintingBTPHandler"  >
+			<validator class="com.eastarjet.net.service.terminal.view.validator.PatternValidator" 
+				target="output" >
+				<attribute name="pattern" value="$0x1b;$0x5b;$0x35;$0x69;$0x28;$0x42;$0x54;$0x50;%*$0x1b;$0x5b;$0x34;$0x69;" />
+			</validator>
+		</handler>
+		
+		<handler  class="com.eastarjet.crs.proxy.skyport.handler.PaxListHandler"  target="output" 
+		index="last" />
+		
+		<reference id="checkinCommandView" />
+		<reference id="mainMenuView" />
+		<reference id="loginView" />
+		
+	</view>
+
+	<view id="checkinView" >
+		<handler  class="com.eastarjet.crs.proxy.skyport.handler.PaxListHandler"  target="output" 
+		index="last" />
+		
+		<reference id="inputTravelDocView" />
+		<reference id="updateTravelDocView" />
+		<reference id="checkinCommandView" />
+		<reference id="mainMenuView" />
+		<reference id="loginView" />
+	</view>
+
+	<view id="inputTravelDocView" >
+		<validator class="com.eastarjet.net.service.terminal.view.validator.MatchValidator" 
+			target="output" >
+			<attribute name="pattern" value="CheckIn                     Input Travel Document" />
+		</validator>
+
+		<handler  class="com.eastarjet.crs.proxy.skyport.handler.InputTravelDocHandler"  target="intput" >
+			<validator class="com.eastarjet.net.service.terminal.view.validator.MatchValidator" 
+				target="output" >
+				<attribute name="pattern" value="CheckIn                     Input Travel Document" />
+			</validator>
+		</handler>
+		
+
+		<handler  class="com.eastarjet.crs.proxy.skyport.handler.ViewEchoHandler" 
+		index="last" />
+		
+		<reference id="checkinCommandView" />
+		<reference id="mainMenuView" />
+		<reference id="loginView" />
+	</view>
+
+	<view id="checkWatchList" >
+		<handler  class="com.eastarjet.crs.proxy.skyport.handler.WatchListConfirmHandler"  target="output"  >
+		</handler>
+	
+		<reference id="checkinCommandView" />
+		<reference id="mainMenuView" />
+		<reference id="loginView" />
+	</view>		
+		
+	<view id="updateTravelDocView" >
+			<validator class="com.eastarjet.net.service.terminal.view.validator.MatchValidator" 
+				target="output" >
+				<attribute name="pattern" value="Please verify this travel document for " />
+			</validator>
+
+		<handler  class="com.eastarjet.crs.proxy.skyport.handler.UpdateTravelDocHandler"  target="output" >
+			<validator class="com.eastarjet.net.service.terminal.view.validator.BeginEndMatchValidator" 
+				target="output" >
+				<attribute name="beginPattern" value="Please verify this travel document for " />
+				<attribute name="endPattern" value="Is travel information correct?" />
+				<attribute name="endPattern" value="." />
+			</validator>
+		</handler>
+
+
+		<handler  class="com.eastarjet.crs.proxy.skyport.handler.VerifyPassportHandler"  target="output" >
+			<validator class="com.eastarjet.net.service.terminal.view.validator.MatchValidator" 
+				target="output" >
+				<attribute name="pattern" value="Enter 'Y' to save, or line number to change." />
+			</validator>
+		</handler>
+
+		<handler  class="com.eastarjet.crs.proxy.skyport.handler.VerifyPassportHandler"  target="output" >
+			<validator class="com.eastarjet.net.service.terminal.view.validator.MatchValidator" 
+				target="output" >
+				<attribute name="pattern" value="Enter valid line number." />
+			</validator>
+		</handler>
+		
+		<handler  class="com.eastarjet.crs.proxy.skyport.handler.printing.PrintingATBHandler"  >
+			<validator class="com.eastarjet.net.service.terminal.view.validator.PatternValidator" 
+				target="output" >
+				<!--  1b,5b,35,69,0d,0a,28,41,54,42 = "^[5i\r\n(ATB" -->
+				<attribute name="pattern" value="$0x1b;$0x5b;$0x35;$0x69;$0x0d;$0x0a;$0x28;$0x41;$0x54;$0x42;%*$0x1b;$0x5b;$0x34;$0x69;" />
+			</validator>
+			<attribute name="domain" value="DEF" />
+			<attribute name="agent"  value="ejonepass"/>
+			<attribute name="password" value="godhsvotm12" />
+			<attribute name="soap.operationManager" 	value="http://internal-zeibep-lb-1526732820.ap-northeast-2.elb.amazonaws.com/OperationsManagerClient.asmx"/>
+			<attribute name="soap.sessionManager" 		value="http://internal-zeibep-lb-1526732820.ap-northeast-2.elb.amazonaws.com/SessionManagerClient.asmx"/>
+			<!--<attribute name="soap.operationManager" 	value="http://internal-zeibep-lb-1526732820.ap-northeast-2.elb.amazonaws.com/OperationsManagerClient.asmx"/>
+			<attribute name="soap.sessionManager" 		value="http://internal-zeibep-lb-1526732820.ap-northeast-2.elb.amazonaws.com/SessionManagerClient.asmx"/>-->
+		</handler>	
+		<handler  class="com.eastarjet.crs.proxy.skyport.handler.printing.PrintingBTPHandler"  >
+			<validator class="com.eastarjet.net.service.terminal.view.validator.PatternValidator" 
+				target="output" >
+				<!--  1b,5b,35,69,0d,0a,28,42,54,50 = "^[5i\r\n(BTP" -->
+				<attribute name="pattern" value="$0x1b;$0x5b;$0x35;$0x69;$0x28;$0x42;$0x54;$0x50;%*$0x1b;$0x5b;$0x34;$0x69;" />
+				<!--<attribute name="pattern" value="$0x1b;$0x5b;$0x35;$0x69;$0x0d;BTP$0x0d;%*$0x1b;$0x5b;$0x34;$0x69;" /> -->
+			</validator>
+		</handler>	
+		<handler  class="com.eastarjet.crs.proxy.skyport.handler.ViewEchoHandler" 
+		index="last" />
+		
+		<reference id="checkinCommandView" />
+		<reference id="mainMenuView" />
+		<reference id="loginView" />
+	</view>
+
+	<view id="generalRefView" >
+			<validator class="com.eastarjet.net.service.terminal.view.validator.MatchValidator" 
+				target="output" >
+				<attribute name="pattern" value="                                General Reference" />
+			</validator>
+
+		<handler  class="com.eastarjet.crs.proxy.skyport.handler.GeneralRefHandler"  target="output" >
+			<validator class="com.eastarjet.net.service.terminal.view.validator.MatchValidator" 
+				target="output" >
+				<!-- 2. 체크인 시간  = "32,2e,20,ec,b2,b4,ed,81,ac,ec,9d,b8,20,ec,8b,9c,ea,b0,84," 
+				 -->
+				<attribute name="pattern" value="$0x32;$0x2e;$0x20;$0xec;$0xb2;$0xb4;$0xed;$0x81;$0xac;$0xec;$0x9d;$0xb8;$0x20;$0xec;$0x8b;$0x9c;$0xea;$0xb0;$0x84;" />
+			</validator>
+		</handler>
+		
+
+		<handler  class="com.eastarjet.crs.proxy.skyport.handler.ViewEchoHandler" 
+		index="last" />
+		
+		<reference id="mainMenuView" />
+		<reference id="loginView" />
+	</view>
+	
+</views>
+</ViewConfig>

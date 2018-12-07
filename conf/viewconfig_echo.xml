@@ -1,0 +1,23 @@
+<views start="echo">
+	<attribute name="pacakge" value="com.eastarjet.net.terminal.view.handler" />
+	<view id="echo" >
+	
+		<handler class="com.eastarjet.crs.proxy.skyport.handler.LoginHandler"
+				  target="input" >
+			<validator class="com.eastarjet.net.service.terminal.view.validator.PatternValidator" 
+				target="output" >
+				<attribute name="pattern" value="Connected:" />
+			</validator>
+		</handler>
+		 
+		<handler class="com.eastarjet.crs.proxy.skyport.handler.LoginHandler"
+				  target="input" >
+			<validator class="com.eastarjet.net.service.terminal.view.validator.PatternValidator" 
+				target="output" >
+				<attribute name="pattern" value="Agent logon:" />
+			</validator>
+		</handler> 
+		
+		<handler   class="com.eastarjet.net.service.terminal.view.handler.EchoHandler" />
+	</view>
+</views>
